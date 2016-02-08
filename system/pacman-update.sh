@@ -21,6 +21,11 @@ update_pacman () {
 
 update_aur () {
 	yaourt -Syyau --noconfirm
+	if [ $? -eq 0 ]; then
+		return 0
+	else
+		return 1
+	fi
 }
 
 cleanup () {
@@ -60,11 +65,16 @@ case $MODE in
     default)
         echo "Updating public mirror list"
         update_mirrors
-        echo "Updating pacman keyring"
-        update_keys
+        #echo "Updating pacman keyring"
+        #update_keys
         echo "Running AUR update"
         update_aur 
-        echo "Remember to cleanup after verifying all processes ran correctly"
+		if [ $? -eq 0 ]; then
+			echo "Detected upgrade ran successfully.  Cleaning up"
+			cleanup
+		else
+			echo "Detected upgrade encountered errors.  Skipping cleanup"
+		fi
         ;;
 	cleanup) cleanup;;
     orphan-detect|orphan) orphan-detect;;
