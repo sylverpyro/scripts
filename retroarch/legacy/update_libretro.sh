@@ -79,20 +79,20 @@ sudo ./libretro-install.sh "${INSTALLPREFIX}"
 #make && sudo cp -v libretro.so "${INSTALLPREFIX}/libretro-pcsxrearmed.so"
 
 ## yabause: Sega Saturn
-PROJECT=yabause
-PROJECTDIR="${LIBRETRO}/${PROJECT}"
-echo "Building $PROJECT in $PROJECTDIR"
-if [ ! -d "${PROJECTDIR}" ]; then
-        cd "${LIBRETRO}"
-        echo "Doing initial GIT import"
-        git clone git://github.com/libretro/yabause.git
-fi
-cd "${PROJECTDIR}"
-echo "Updating yabause-libretro"
-git pull
-echo "Building and installing"
-cd libretro
-make && sudo cp -v ./yabause_libretro.so "${INSTALLPREFIX}/yabause-libretro.so"
+#PROJECT=yabause
+#PROJECTDIR="${LIBRETRO}/${PROJECT}"
+#echo "Building $PROJECT in $PROJECTDIR"
+#if [ ! -d "${PROJECTDIR}" ]; then
+#        cd "${LIBRETRO}"
+#        echo "Doing initial GIT import"
+#        git clone git://github.com/libretro/yabause.git
+#fi
+#cd "${PROJECTDIR}"
+#echo "Updating yabause-libretro"
+#git pull
+#echo "Building and installing"
+#cd libretro
+#make && sudo cp -v ./yabause_libretro.so "${INSTALLPREFIX}/yabause-libretro.so"
 }
 
 function usage {

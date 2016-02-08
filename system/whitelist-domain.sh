@@ -11,6 +11,14 @@ help () {
     echo " -w : Add domain, as specified to $WHILTELIST"
     echo "       See man hostsblock.conf for the necessary format"
     echo "       If necessary, add ' .dl.dropbox.com' to include a space"
+    echo '       In this file, put a space in front of
+       a string in order to let through that specific site (without quotations), e.g.
+       " www.example.com" will unblock "http://www.example.com" but not
+       "http://subdomain.example.com". Leave no space in front of the entry to
+       "unblock all subdomains that contain that string, e.g. ".dropbox.com" will let
+       through "www.dropbox.com", "dl.www.dropbox.com", "foo.dropbox.com",
+       "bar.dropbox.com", etc.
+       whitelist="/etc/hostsblock/white.list"'
     echo ""
     echo " -d : Removed domain, from the block list and restart dnsmasq"
     echo "       NOTE: If you do not also -w DOMAIN sepeartely, it will"
