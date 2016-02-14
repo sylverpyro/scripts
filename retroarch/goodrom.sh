@@ -22,6 +22,7 @@ set -o nounset                              # Treat unset variables as an error
 function script_help () {
 	echo "Usage: $0 [-d] [-r] <RomName> [TargetDirectoryPath]"
 	echo "  -d        : Enable debugging"
+    echo "  -q        : Supress 'Rom is in ideal location' messages"
 	echo "  -r        : Actually run the 'mv' command on the files"
 	echo "  <RomName> : A ROM file that exists"
 	echo " [TargetDirectoryPath] : A path to a directory you want to generate 'mv' commands against"
@@ -42,10 +43,20 @@ elif [ "$1" == "-h" ]; then
 fi
 #if [ ! -f "$1" ]; then echo "Give me a rom name"; exit; fi
 
-# Check for, and discard, the debug flag
-if [ "$1" == '-d' ]; then DEBUG="true"; shift; else DEBUG="false"; fi;
-# Check for, and discard the run flag
-if [ "$1" == '-r' ]; then RUN="true"; shift; else RUN="false"; fi;
+DEBUG="false"
+RUN="false"
+QUIET="false"
+
+while [[ "$1" == -[drq] ]]; do
+    case "$1" in
+        # Check for, and discard, the debug flag
+        -d) DEBUG="true"; shift;;
+        # Check for, and discard the run flag
+        -r) RUN="true"; shift;;
+        # Check for, and discard, the quiet flag
+        -q) QUIET="true"; shift;;
+    esac
+done
 # Check if we have two arguments remaining
 #  If we do, then the user want's to use the second arg as the path to a directory to
 #  place the ROM in the 'mv' command, so set it.  Otherwise we need to set TARGETDIR to the
@@ -173,6 +184,6 @@ if [ "$PATH" != "$PROPOSEDPATH" ]; then
 		# If we aren't going to actually move it, just print out where we would have moved it if asked
         echo "Proposed Move: mv -v $PATH -> $PROPOSEDPATH"
     fi
-else
+elif [ "$QUIET" == "false" ]; then
     echo "Rom is already in it's ideal location: $PATH"
 fi
