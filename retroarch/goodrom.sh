@@ -99,7 +99,10 @@ decho "Name: '$NAME'"
 REGION=""
 # Before we do anything else, check if we have a BIOS file
 #  If we do, set the REGION to BIOS as we want all of these together
-if [ ! `echo "$NAME" | $grep -c "$BIOS"` -eq 0 ]; then REGION="bios"; fi
+if [ ! `echo "$NAME" | $grep -c "$BIOS"` -eq 0 ]; then 
+    REGION="bios"
+    decho "Region detected as BIOS"
+fi
 
 # Parse through all the fileds containted within () in the ROMs name
 for field in $(echo "$NAME" | $awk -vRS=")" -vFS="(" '{print $2}'); do
@@ -140,15 +143,19 @@ for field in $(echo "$NAME" | $awk -vRS=")" -vFS="(" '{print $2}'); do
 	fi
 done
 # If we never found a valid region, default it to 'foreign/other'
-if [ "$REGION" == "" ]; then REGION="foreign/unknown";	fi
+if [ "$REGION" == "" ]; then 
+    REGION="foreign/unknown"
+    decho "Region not detected, set to $REGION"
+fi
 
 # If the name contains one of our filtered strings (for non-standard roms)
 #  then add a -filtered flag to the REGION to differentiate it
 if [ ! `echo "$NAME" | $grep -c "$FILTER_OUT"` -eq 0 ]; then
 	decho "Found a filter string in the rom's name"
 	REGION="$REGION-filtered"
+else
+    decho "Region: '$REGION'"
 fi
-decho "Region: '$REGION'"
 
 # Build up the proposed path to place the ROM
 PROPOSEDPATH="${TARGETDIR}/${REGION}/${FILE}"
@@ -166,5 +173,6 @@ if [ "$PATH" != "$PROPOSEDPATH" ]; then
 		# If we aren't going to actually move it, just print out where we would have moved it if asked
         echo "Proposed Move: mv -v $PATH -> $PROPOSEDPATH"
     fi
+else
+    echo "Rom is already in it's ideal location: $PATH"
 fi
-
