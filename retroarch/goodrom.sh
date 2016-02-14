@@ -19,7 +19,7 @@
 
 set -o nounset                              # Treat unset variables as an error
 
-if [ $# -eq 0 -o "$1" == "-h" ]; then 
+function script_help () {
 	echo "Usage: $0 [-d] [-r] <RomName> [TargetDirectoryPath]"
 	echo "  -d        : Enable debugging"
 	echo "  -r        : Actually run the 'mv' command on the files"
@@ -34,6 +34,11 @@ if [ $# -eq 0 -o "$1" == "-h" ]; then
 	echo " With the '-r' flag, the script will instead attempt to move the ROM automatically, craeting"
 	echo " any needed directory structure in the [TargetDirectoryPath] specified"
 	exit
+}
+if [ $# -eq 0 ]; then
+    script_help; exit
+elif [ "$1" == "-h" ]; then 
+    script_help; exit
 fi
 #if [ ! -f "$1" ]; then echo "Give me a rom name"; exit; fi
 
