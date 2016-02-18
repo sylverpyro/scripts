@@ -20,21 +20,21 @@
 set -o nounset                              # Treat unset variables as an error
 
 function script_help () {
-	echo "Usage: $0 [-d] [-r] <RomName> [TargetDirectoryPath]"
-	echo "  -d        : Enable debugging"
-    echo "  -q        : Supress 'Rom is in ideal location' messages"
-	echo "  -r        : Actually run the 'mv' command on the files"
-	echo "  <RomName> : A ROM file that exists"
-	echo " [TargetDirectoryPath] : A path to a directory you want to generate 'mv' commands against"
-	echo ""
-	echo "Function: This script will scan the name of a rom given to try and determine if it falls into"
-	echo " the 'good rom' cagegory -- Meaning it is from the US or World region, and is a standard"
-	echo " release ROM (i.e. not Alpha/Beta/Proto/Unl ect.)"
-	echo " It will then attempt to generate a meaningfull path from that information and generate a 'mv'"
-	echo " command that can be used to file the ROM according to the information found in it's name"
-	echo " With the '-r' flag, the script will instead attempt to move the ROM automatically, craeting"
-	echo " any needed directory structure in the [TargetDirectoryPath] specified"
-	exit
+  echo "Usage: $0 [-d] [-r] <RomName> [TargetDirectoryPath]"
+  echo "  -d        : Enable debugging"
+  echo "  -q        : Supress 'Rom is in ideal location' messages"
+  echo "  -r        : Actually run the 'mv' command on the files"
+  echo "  <RomName> : A ROM file that exists"
+  echo " [TargetDirectoryPath] : A path to a directory you want to generate 'mv' commands against"
+  echo ""
+  echo "Function: This script will scan the name of a rom given to try and determine if it falls into"
+  echo " the 'good rom' cagegory -- Meaning it is from the US or World region, and is a standard"
+  echo " release ROM (i.e. not Alpha/Beta/Proto/Unl ect.)"
+  echo " It will then attempt to generate a meaningfull path from that information and generate a 'mv'"
+  echo " command that can be used to file the ROM according to the information found in it's name"
+  echo " With the '-r' flag, the script will instead attempt to move the ROM automatically, craeting"
+  echo " any needed directory structure in the [TargetDirectoryPath] specified"
+  exit
 }
 if [ $# -eq 0 ]; then
     script_help; exit
@@ -48,14 +48,14 @@ RUN="false"
 QUIET="false"
 
 while [[ "$1" == -[drq] ]]; do
-    case "$1" in
-        # Check for, and discard, the debug flag
-        -d) DEBUG="true"; shift;;
-        # Check for, and discard the run flag
-        -r) RUN="true"; shift;;
-        # Check for, and discard, the quiet flag
-        -q) QUIET="true"; shift;;
-    esac
+  case "$1" in
+    # Check for, and discard, the debug flag
+    -d) DEBUG="true"; shift;;
+    # Check for, and discard the run flag
+    -r) RUN="true"; shift;;
+    # Check for, and discard, the quiet flag
+    -q) QUIET="true"; shift;;
+  esac
 done
 # Check if we have two arguments remaining
 #  If we do, then the user want's to use the second arg as the path to a directory to
@@ -111,47 +111,56 @@ REGION=""
 # Before we do anything else, check if we have a BIOS file
 #  If we do, set the REGION to BIOS as we want all of these together
 if [ ! `echo "$NAME" | $grep -c "$BIOS"` -eq 0 ]; then 
-    REGION="bios"
-    decho "Region detected as BIOS"
+  REGION="bios"
+  decho "Region detected as BIOS"
 fi
 
 # Parse through all the fileds containted within () in the ROMs name
 for field in $(echo "$NAME" | $awk -vRS=")" -vFS="(" '{print $2}'); do
-	# Only check the field if we haven't already found a valid region
-	if [ "$REGION" == "" ]; then
-		decho "Scanning field: $field"
-		# Just try to match the field against the know types
-		# Order in this is important as the first match is the match that will be used
-		#  and some ROMS have multiple Region codes in their name.  So make sure the
-		#  region you prefer to detect is higher up than ones you don't prefer to detect
-		case $field in
-			*US*|*USA*) 			REGION="roms" ;;
-			*World*) 				REGION="roms" ;;
-			*EU*|*Eu*|*Europe*)		REGION="foreign/Europe" ;;
-			*UK*|*"United Kingdom"*)	REGION="foreign/UK" ;;
-			*AU*|*Australia*)		REGION="foreign/Australia" ;;
-			*CA*|*Canada*)			REGION="foreign/Canada" ;;
-			*JP*|*Jp*|*Japan*) 		REGION="foreign/Japan" ;;
-			*DE*|*Germany*)			REGION="foreign/Germany" ;;
-			*[Ff][Rr]*|*[Ff]rance*)			REGION="foreign/France" ;;
-			*CA*|*Canada)			REGION="foreign/Canada" ;;
-			*RU*|*Russia)			REGION="foreign/Russia" ;;
-			*ES*|*Spain*)			REGION="foreign/Spain" ;;
-			*SE*|*Sweden*)			REGION="foreign/Sweden" ;;
-			*NL*|*Nl*|*Netherlands*)	REGION="foreign/Netherlands" ;;
-			*BR*|*Brazil*)			REGION="foreign/Brazil" ;;
-			*DK*|*Denmark*)			REGION="foreign/Denmark" ;;
-			*NO*|*Norway*)			REGION="foreign/Norway" ;;
-			*IT*|*Italy*)			REGION="foreign/Italy" ;;
-			*TW*|*Taiwan*)			REGION="foregin/Taiwan" ;;
-			*AS*|*"American Samoa"*)	REGION="foregin/AmericanSamoa" ;;
-			*KR*|*Korea*)			REGION="foreign/Korea" ;;
-			*CN*|*China*)			REGION="foreign/China" ;;
-			*HK*|*"Hong Kong"*)		REGION="foreign/HongKong" ;;
-			*PD*)					REGION="foreign/PD" ;;
-			*FW*)					REGION="foreign/FW" ;;
-		esac
-	fi
+  # Only check the field if we haven't already found a valid region
+  if [ "$REGION" == "" ]; then
+    decho "Scanning field: $field"
+    # Just try to match the field against the know types
+    # Order in this is important as the first match is the match that will be used
+    #  and some ROMS have multiple Region codes in their name.  So make sure the
+    #  region you prefer to detect is higher up than ones you don't prefer to detect
+    case $field in
+      *US*|*USA*)                 REGION="roms" ;;
+      *World*)                    REGION="roms" ;;
+      *en-ja*)                    REGION="roms" ;;
+      *EU*|*Eu*|eu|*Europe*)      REGION="foreign/Europe" ;;
+      *UK*|uk|*gb*|gb|*"United Kingdom"*) REGION="foreign/UK" ;;
+      *AU*|au|*Australia*)        REGION="foreign/Australia" ;;
+      *CA*|ca|*Canada*)           REGION="foreign/Canada" ;;
+      *JP*|*Jp*|jp|*Japan*)       REGION="foreign/Japan" ;;
+      *DE*|de|*Germany*)          REGION="foreign/Germany" ;;
+      *[F][Rr]*|fr|*[Ff]rance*)   REGION="foreign/France" ;;
+      *RU*|ru|*Russia)            REGION="foreign/Russia" ;;
+      *ES*|es|*Spain*)            REGION="foreign/Spain" ;;
+      *SE*|se|*Sweden*)           REGION="foreign/Sweden" ;;
+      *NL*|*Nl*|nl|*Netherlands*) REGION="foreign/Netherlands" ;;
+      *BR*|br|*Brazil*)           REGION="foreign/Brazil" ;;
+      *DK*|dk|*Denmark*)          REGION="foreign/Denmark" ;;
+      *NO*|no|*Norway*)           REGION="foreign/Norway" ;;
+      *IT*|it|*Italy*)            REGION="foreign/Italy" ;;
+      *TW*|tw|*Taiwan*)           REGION="foreign/Taiwan" ;;
+      *AS*|as|*"American Samoa"*) REGION="foreign/AmericanSamoa" ;;
+      *KR*|kr|*Korea*)            REGION="foreign/Korea" ;;
+      *CN*|cn|*China*)            REGION="foreign/China" ;;
+      *HK*|hk|*"Hong Kong"*)      REGION="foreign/HongKong" ;;
+      *HU*|hu|*Hungary*)          REGION="foreign/Hungary" ;;
+      *SK*|sk|*Slovakia*)         REGION="foreign/Slovakia" ;;
+      *CS*|cs|Serbia)             REGION="foreign/Serbia" ;;
+      *PT*|ps|Portugal)           REGION="foreign/Portugal" ;;
+      *SL*|sl|"Sierra Leone")     REGION="foreign/SierraLeone" ;;
+      *SV*|sv|"El Salvador")      REGION="foreign/ElSalvador" ;;
+      *SR*|sr|Suriname)           REGION="foreign/Suriname" ;;
+      *SQ*|sq)                    REGION="foreign/SQ" ;;
+      *DA*|da)                    REGION="foreign/DA" ;;
+      *PD*|pd)                    REGION="foreign/PD" ;;
+      *FW*|fw)                    REGION="foreign/FW" ;;
+    esac
+  fi
 done
 # If we never found a valid region, default it to 'foreign/other'
 if [ "$REGION" == "" ]; then 
@@ -162,8 +171,8 @@ fi
 # If the name contains one of our filtered strings (for non-standard roms)
 #  then add a -filtered flag to the REGION to differentiate it
 if [ ! `echo "$NAME" | $grep -c "$FILTER_OUT"` -eq 0 ]; then
-	decho "Found a filter string in the rom's name"
-	REGION="$REGION-filtered"
+  decho "Found a filter string in the rom's name"
+  REGION="$REGION-filtered"
 else
     decho "Region: '$REGION'"
 fi
@@ -174,15 +183,15 @@ decho "Proposed Path: $PROPOSEDPATH"
 
 # Check that the proposed path isn't where the rom currently exists
 if [ "$PATH" != "$PROPOSEDPATH" ]; then
-	# Check if we are supposed to actually move the ROM
+  # Check if we are supposed to actually move the ROM
     if [ "$RUN" == "true" ]; then
-		# If it needs to be moved, and we were asked to move it, then do so
-		#  But make sure to make the directory path first (as the region codes can be obscure)
+    # If it needs to be moved, and we were asked to move it, then do so
+    #  But make sure to make the directory path first (as the region codes can be obscure)
         if [ ! -d "${TARGETDIR}/${REGION}" ]; then /usr/bin/mkdir -p "${TARGETDIR}/${REGION}" || exit; fi;
-        /usr/bin/mv -v "$PATH" "$PROPOSEDPATH"
+        /usr/bin/mv -n -v "$PATH" "$PROPOSEDPATH"
     else
-		# If we aren't going to actually move it, just print out where we would have moved it if asked
-        echo "Proposed Move: mv -v $PATH -> $PROPOSEDPATH"
+    # If we aren't going to actually move it, just print out where we would have moved it if asked
+        echo "Proposed Move: mv -n -v $PATH -> $PROPOSEDPATH"
     fi
 elif [ "$QUIET" == "false" ]; then
     echo "Rom is already in it's ideal location: $PATH"
