@@ -124,10 +124,11 @@ for field in $(echo "$NAME" | $awk -vRS=")" -vFS="(" '{print $2}'); do
     # Order in this is important as the first match is the match that will be used
     #  and some ROMS have multiple Region codes in their name.  So make sure the
     #  region you prefer to detect is higher up than ones you don't prefer to detect
+    # Sometimes checking TOSEC region codes can help: http://www.tosecdev.org/tosec-naming-convention
     case $field in
       *US*|*USA*)                 REGION="roms" ;;
       *World*)                    REGION="roms" ;;
-      *en-ja*)                    REGION="roms" ;;
+      en|en-*)                    REGION="roms" ;;
       *EU*|*Eu*|eu|*Europe*)      REGION="foreign/Europe" ;;
       *UK*|uk|*gb*|gb|*"United Kingdom"*) REGION="foreign/UK" ;;
       *AU*|au|*Australia*)        REGION="foreign/Australia" ;;
@@ -155,10 +156,13 @@ for field in $(echo "$NAME" | $awk -vRS=")" -vFS="(" '{print $2}'); do
       *SL*|sl|"Sierra Leone")     REGION="foreign/SierraLeone" ;;
       *SV*|sv|"El Salvador")      REGION="foreign/ElSalvador" ;;
       *SR*|sr|Suriname)           REGION="foreign/Suriname" ;;
+      *DO*|do|"Dominican Republic") REGION="foreign/Dominican Republic" ;;
       *SQ*|sq)                    REGION="foreign/SQ" ;;
       *DA*|da)                    REGION="foreign/DA" ;;
       *PD*|pd)                    REGION="foreign/PD" ;;
       *FW*|fw)                    REGION="foreign/FW" ;;
+      *Asia*)                     REGION="foreign/Asia" ;;
+      *PAL*)                      REGION="foreign/PAL" ;;
     esac
   fi
 done
