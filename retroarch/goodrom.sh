@@ -19,9 +19,10 @@
 
 set -o nounset                              # Treat unset variables as an error
 
-if [ $# -eq 0 -o "$1" == "-h" ]; then 
+function script_help () {
 	echo "Usage: $0 [-d] [-r] <RomName> [TargetDirectoryPath]"
 	echo "  -d        : Enable debugging"
+    echo "  -q        : Supress 'Rom is in ideal location' messages"
 	echo "  -r        : Actually run the 'mv' command on the files"
 	echo "  <RomName> : A ROM file that exists"
 	echo " [TargetDirectoryPath] : A path to a directory you want to generate 'mv' commands against"
@@ -34,13 +35,28 @@ if [ $# -eq 0 -o "$1" == "-h" ]; then
 	echo " With the '-r' flag, the script will instead attempt to move the ROM automatically, craeting"
 	echo " any needed directory structure in the [TargetDirectoryPath] specified"
 	exit
+}
+if [ $# -eq 0 ]; then
+    script_help; exit
+elif [ "$1" == "-h" ]; then 
+    script_help; exit
 fi
 #if [ ! -f "$1" ]; then echo "Give me a rom name"; exit; fi
 
-# Check for, and discard, the debug flag
-if [ "$1" == '-d' ]; then DEBUG="true"; shift; else DEBUG="false"; fi;
-# Check for, and discard the run flag
-if [ "$1" == '-r' ]; then RUN="true"; shift; else RUN="false"; fi;
+DEBUG="false"
+RUN="false"
+QUIET="false"
+
+while [[ "$1" == -[drq] ]]; do
+    case "$1" in
+        # Check for, and discard, the debug flag
+        -d) DEBUG="true"; shift;;
+        # Check for, and discard the run flag
+        -r) RUN="true"; shift;;
+        # Check for, and discard, the quiet flag
+        -q) QUIET="true"; shift;;
+    esac
+done
 # Check if we have two arguments remaining
 #  If we do, then the user want's to use the second arg as the path to a directory to
 #  place the ROM in the 'mv' command, so set it.  Otherwise we need to set TARGETDIR to the
@@ -94,7 +110,10 @@ decho "Name: '$NAME'"
 REGION=""
 # Before we do anything else, check if we have a BIOS file
 #  If we do, set the REGION to BIOS as we want all of these together
-if [ ! `echo "$NAME" | $grep -c "$BIOS"` -eq 0 ]; then REGION="bios"; fi
+if [ ! `echo "$NAME" | $grep -c "$BIOS"` -eq 0 ]; then 
+    REGION="bios"
+    decho "Region detected as BIOS"
+fi
 
 # Parse through all the fileds containted within () in the ROMs name
 for field in $(echo "$NAME" | $awk -vRS=")" -vFS="(" '{print $2}'); do
@@ -135,15 +154,19 @@ for field in $(echo "$NAME" | $awk -vRS=")" -vFS="(" '{print $2}'); do
 	fi
 done
 # If we never found a valid region, default it to 'foreign/other'
-if [ "$REGION" == "" ]; then REGION="foreign/unknown";	fi
+if [ "$REGION" == "" ]; then 
+    REGION="foreign/unknown"
+    decho "Region not detected, set to $REGION"
+fi
 
 # If the name contains one of our filtered strings (for non-standard roms)
 #  then add a -filtered flag to the REGION to differentiate it
 if [ ! `echo "$NAME" | $grep -c "$FILTER_OUT"` -eq 0 ]; then
 	decho "Found a filter string in the rom's name"
 	REGION="$REGION-filtered"
+else
+    decho "Region: '$REGION'"
 fi
-decho "Region: '$REGION'"
 
 # Build up the proposed path to place the ROM
 PROPOSEDPATH="${TARGETDIR}/${REGION}/${FILE}"
@@ -161,5 +184,6 @@ if [ "$PATH" != "$PROPOSEDPATH" ]; then
 		# If we aren't going to actually move it, just print out where we would have moved it if asked
         echo "Proposed Move: mv -v $PATH -> $PROPOSEDPATH"
     fi
+elif [ "$QUIET" == "false" ]; then
+    echo "Rom is already in it's ideal location: $PATH"
 fi
-
