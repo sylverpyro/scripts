@@ -61,7 +61,7 @@ done
 #  If we do, then the user want's to use the second arg as the path to a directory to
 #  place the ROM in the 'mv' command, so set it.  Otherwise we need to set TARGETDIR to the
 #  current directory so we have somewhere to generate the path against
-if [ $# -eq 2 ]; then TARGETDIR="`/usr/bin/readlink -f $2`"; else TARGETDIR="`pwd`"; fi;
+if [ $# -eq 2 ]; then TARGETDIR="`/usr/bin/readlink -f "$2"`"; else TARGETDIR="`pwd`"; fi;
 
 function decho () { if [ "$DEBUG" == "true" ]; then echo "$1"; fi; }
 
@@ -128,39 +128,39 @@ for field in $(echo "$NAME" | $awk -vRS=")" -vFS="(" '{print $2}'); do
     case $field in
       *US*|*USA*)                 REGION="roms" ;;
       *World*)                    REGION="roms" ;;
-      en|en-*)                    REGION="roms" ;;
-      *EU*|*Eu*|eu|*Europe*)      REGION="foreign/Europe" ;;
-      *UK*|uk|*gb*|gb|*"United Kingdom"*) REGION="foreign/UK" ;;
-      *AU*|au|*Australia*)        REGION="foreign/Australia" ;;
-      *CA*|ca|*Canada*)           REGION="foreign/Canada" ;;
-      *JP*|*Jp*|jp|*Japan*)       REGION="foreign/Japan" ;;
-      *DE*|de|*Germany*)          REGION="foreign/Germany" ;;
-      *[F][Rr]*|fr|*[Ff]rance*)   REGION="foreign/France" ;;
-      *RU*|ru|*Russia)            REGION="foreign/Russia" ;;
-      *ES*|es|*Spain*)            REGION="foreign/Spain" ;;
-      *SE*|se|*Sweden*)           REGION="foreign/Sweden" ;;
-      *NL*|*Nl*|nl|*Netherlands*) REGION="foreign/Netherlands" ;;
-      *BR*|br|*Brazil*)           REGION="foreign/Brazil" ;;
-      *DK*|dk|*Denmark*)          REGION="foreign/Denmark" ;;
-      *NO*|no|*Norway*)           REGION="foreign/Norway" ;;
-      *IT*|it|*Italy*)            REGION="foreign/Italy" ;;
-      *TW*|tw|*Taiwan*)           REGION="foreign/Taiwan" ;;
-      *AS*|as|*"American Samoa"*) REGION="foreign/AmericanSamoa" ;;
-      *KR*|kr|*Korea*)            REGION="foreign/Korea" ;;
-      *CN*|cn|*China*)            REGION="foreign/China" ;;
-      *HK*|hk|*"Hong Kong"*)      REGION="foreign/HongKong" ;;
-      *HU*|hu|*Hungary*)          REGION="foreign/Hungary" ;;
-      *SK*|sk|*Slovakia*)         REGION="foreign/Slovakia" ;;
-      *CS*|cs|Serbia)             REGION="foreign/Serbia" ;;
-      *PT*|ps|Portugal)           REGION="foreign/Portugal" ;;
-      *SL*|sl|"Sierra Leone")     REGION="foreign/SierraLeone" ;;
-      *SV*|sv|"El Salvador")      REGION="foreign/ElSalvador" ;;
-      *SR*|sr|Suriname)           REGION="foreign/Suriname" ;;
-      *DO*|do|"Dominican Republic") REGION="foreign/Dominican Republic" ;;
-      *SQ*|sq)                    REGION="foreign/SQ" ;;
-      *DA*|da)                    REGION="foreign/DA" ;;
-      *PD*|pd)                    REGION="foreign/PD" ;;
-      *FW*|fw)                    REGION="foreign/FW" ;;
+      En|en|en-*)                 REGION="roms" ;;
+      *EU*|*Eu*|[Ee]u|*Europe*)   REGION="foreign/Europe" ;;
+      *UK*|[Uu]k|*gb*|gb|*"United Kingdom"*) REGION="foreign/UK" ;;
+      *AU*|[Aa]u|*Australia*)     REGION="foreign/Australia" ;;
+      *CA*|[Cc]a|*Canada*)        REGION="foreign/Canada" ;;
+      *JP*|*Jp*|[Jj]p|*Japan*)    REGION="foreign/Japan" ;;
+      *DE*|[Dd]e|*Germany*)       REGION="foreign/Germany" ;;
+      *F[Rr]*|[Ff]r|*[Ff]rance*)  REGION="foreign/France" ;;
+      *RU*|[Rr]u|*Russia)            REGION="foreign/Russia" ;;
+      *ES*|[Ee]s|*Spain*)            REGION="foreign/Spain" ;;
+      *SE*|[Ss]e|*Sweden*)           REGION="foreign/Sweden" ;;
+      *NL*|*Nl*|[Nn]l|*Netherlands*) REGION="foreign/Netherlands" ;;
+      *BR*|[Bb]r|*Brazil*)           REGION="foreign/Brazil" ;;
+      *DK*|[Dd]k|*Denmark*)          REGION="foreign/Denmark" ;;
+      *NO*|[Nn]o|*Norway*)           REGION="foreign/Norway" ;;
+      *IT*|[Ii]t|*Italy*)            REGION="foreign/Italy" ;;
+      *TW*|[Tt]w|*Taiwan*)           REGION="foreign/Taiwan" ;;
+      *AS*|[Aa]s|*"American Samoa"*) REGION="foreign/AmericanSamoa" ;;
+      *KR*|[Kk]r|*Korea*)            REGION="foreign/Korea" ;;
+      *CN*|[Cc]n|*China*)            REGION="foreign/China" ;;
+      *HK*|[Hh]k|*"Hong Kong"*)      REGION="foreign/HongKong" ;;
+      *HU*|[Hh]u|*Hungary*)          REGION="foreign/Hungary" ;;
+      *SK*|[Ds]k|*Slovakia*)         REGION="foreign/Slovakia" ;;
+      *CS*|[Cc]s|Serbia)             REGION="foreign/Serbia" ;;
+      *PT*|[Pp]s|Portugal)           REGION="foreign/Portugal" ;;
+      *SL*|[Ss]l|"Sierra Leone")     REGION="foreign/SierraLeone" ;;
+      *SV*|[Ss]v|"El Salvador")      REGION="foreign/ElSalvador" ;;
+      *SR*|[Ss]r|Suriname)           REGION="foreign/Suriname" ;;
+      *DO*|[Dd]o|"Dominican Republic") REGION="foreign/Dominican Republic" ;;
+      *SQ*|[Ss]q)                    REGION="foreign/SQ" ;;
+      *DA*|[Dd]a)                    REGION="foreign/DA" ;;
+      *PD*|[Pp]d)                    REGION="foreign/PD" ;;
+      *FW*|[Ff]w)                    REGION="foreign/FW" ;;
       *Asia*)                     REGION="foreign/Asia" ;;
       *PAL*)                      REGION="foreign/PAL" ;;
     esac
