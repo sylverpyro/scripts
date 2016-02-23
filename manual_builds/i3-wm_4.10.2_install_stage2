@@ -7,14 +7,15 @@ set -e
 source_code="$HOME/Source"
 
 # A bunch of environment variables we may want
-. /etc/profile.d/pclib.sh
+#. /etc/profile.d/pclib.sh
 
 # The LD linking flag we need available during the builds
-LDFLAGS=-lxcb
-export LDFLAGS="$LDFLAGS"
+NEW_LDFLAGS="$LDFLAGS -lxcb"
+export LDFLAGS="$NEW_LDFLAGS"
+
+# Make the source code directory if it's missing
 test -d "$source_code" || mkdir "$source_code"
 cd "$source_code"
-
 
 # Xorg macros
 codedir="$source_code/macros"
@@ -44,6 +45,8 @@ git submodule update --init
 git fetch --tags
 latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
 git checkout "$latestTag"
+# Work around a limitation in the CentOS6 autoreconf not passing ACLOCAL_PATH to aclocal
+cp "$ACLOCAL_PATH/xorg-macros.m4" ./m4/
 ./autogen.sh
 make clean
 make 
@@ -61,6 +64,8 @@ git submodule update --init
 git fetch --tags
 latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
 git checkout "$latestTag"
+# Work around a limitation in the CentOS6 autoreconf not passing ACLOCAL_PATH to aclocal
+cp "$ACLOCAL_PATH/xorg-macros.m4" ./m4/
 ./autogen.sh
 make clean
 make 
@@ -78,6 +83,8 @@ git submodule update --init
 git fetch --tags
 latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
 git checkout "$latestTag"
+# Work around a limitation in the CentOS6 autoreconf not passing ACLOCAL_PATH to aclocal
+cp "$ACLOCAL_PATH/xorg-macros.m4" ./m4/
 ./autogen.sh
 make clean
 make 
@@ -110,6 +117,8 @@ cd "$codedir"
 git fetch --tags
 latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
 git checkout "$latestTag"
+# Work around a limitation in the CentOS6 autoreconf not passing ACLOCAL_PATH to aclocal
+cp "$ACLOCAL_PATH/xorg-macros.m4" ./m4/
 ./autogen.sh
 make clean
 make 
@@ -126,6 +135,8 @@ cd "$codedir"
 git fetch --tags
 latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
 git checkout "$latestTag"
+# Work around a limitation in the CentOS6 autoreconf not passing ACLOCAL_PATH to aclocal
+cp "$ACLOCAL_PATH/xorg-macros.m4" ./m4/
 ./autogen.sh
 make clean
 make 
@@ -142,9 +153,43 @@ cd "$codedir"
 git fetch --tags
 latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
 git checkout "$latestTag"
+# Work around a limitation in the CentOS6 autoreconf not passing ACLOCAL_PATH to aclocal
+cp "$ACLOCAL_PATH/xorg-macros.m4" ./m4/
 ./autogen.sh
 make clean
 make
+sudo make install
+
+# Cairo
+codedir="$source_code/cairo"
+echo "Starting work on $codedir"
+cd "$source_code"
+if [ ! -d "$codedir" ]; then
+  git clone git://anongit.freedesktop.org/cairo
+fi
+cd "$codedir"
+git fetch --tags
+latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+git checkout "$latestTag"
+./autogen.sh --prefix=/usr/local
+make clean
+make 
+sudo make install
+
+# YAJL
+codedir="$source_code/yajl"
+echo "Starting work on $codedir"
+cd "$source_code"
+if [ ! -d "$codedir" ]; then
+  git clone https://github.com/lloyd/yajl.git
+fi
+cd "$codedir"
+git fetch --tags
+latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+git checkout "$latestTag"
+./configure --prefix=/usr/local
+make clean
+make 
 sudo make install
 
 #i3
@@ -183,6 +228,8 @@ git checkout "$latestTag"
 make clean
 make
 sudo make install
+# Link the X11 xkb modules into /usr/local/share so i3 can find them
+sudo ln -s /usr/share/X11 /usr/local/share/
 #echo "exec i3" > ~/.xinitrc
 #echo "exec ssh-agent i3" > ~/.xinitrc
 
