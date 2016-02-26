@@ -24,7 +24,7 @@ sudo yum install -y libxcb-devel libXcursor-devel pango-devel pcre-devel \
   check-devel gettext-devel xterm xorg-x11-xkb-extras \
   xorg-x11-xkb-utils-devel libxkbfile-devel libev-devel \
   pulseaudio-libs-devel alsa-lib-devel asciidoc gperf \ 
-  libnl3-devel
+  libnl3-devel libconfuse-devel
 
 #Add the following lines to a new file at the below location
 #TARGET=/etc/profile.d/pclib.sh
