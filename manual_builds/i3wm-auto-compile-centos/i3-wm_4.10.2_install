@@ -1,5 +1,6 @@
 #!/bin/bash
-yum update
+set -e ## Exit immediately on errors instead of trying to continue on
+sudo yum -y update
 
 #Install for compiling and configuring needs
 #sudo yum install -y nano bzip2 gcc git pkgconfig autoconf automake libtool gperf byacc libxslt bison flex
@@ -22,10 +23,12 @@ sudo yum install -y libxcb-devel libXcursor-devel pango-devel pcre-devel \
   xcb-util-keysyms-devel xcb-util-devel xcb-util-wm-devel yajl-devel \
   check-devel gettext-devel xterm xorg-x11-xkb-extras \
   xorg-x11-xkb-utils-devel libxkbfile-devel libev-devel \
-  pulseaudio-libs-devel alsa-lib-devel asciidoc gperf 
+  pulseaudio-libs-devel alsa-lib-devel asciidoc gperf \ 
+  libnl3-devel libconfuse-devel
 
 #Add the following lines to a new file at the below location
-TARGET=/etc/profile.d/pclib.sh
+#TARGET=/etc/profile.d/pclib.sh
+TARGET=~/.bashrc
 echo 'export XORG_CONFIG=/etc/X11/' | sudo tee -a "$TARGET"
 echo 'export PKG_CONFIG_LIBDIR=/usr/local/lib/pkgconfig/:/usr/lib/pkgconfig/:/usr/lib64/pkgconfig/' | sudo tee -a "$TARGET"
 echo 'export PKG_CONFIG_PATH=/usr/share/pkgconfig/:/usr/local/share/pkgconfig/' | sudo tee -a "$TARGET"
@@ -33,4 +36,5 @@ echo 'export ACLOCAL_PATH=/usr/local/share/aclocal/' | sudo tee -a "$TARGET"
 echo 'export LD_LIBRARY_PATH=/usr/local/lib/' | sudo tee -a "$TARGET"
 
 #Restart the machine so kernel and env vars take place.
-sudo reboot
+#sudo reboot
+echo "You may have installed a new kernel, so you will want to check that and reboot if you did"
