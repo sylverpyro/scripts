@@ -157,10 +157,11 @@ for field in $(echo "$NAME" | $awk -vRS=")" -vFS="(" '{print $2}'); do
       *SV*|[Ss]v|"El Salvador")      REGION="foreign/ElSalvador" ;;
       *SR*|[Ss]r|Suriname)           REGION="foreign/Suriname" ;;
       *DO*|[Dd]o|"Dominican Republic") REGION="foreign/Dominican Republic" ;;
-      *SQ*|[Ss]q)                    REGION="foreign/SQ" ;;
-      *DA*|[Dd]a)                    REGION="foreign/DA" ;;
-      *PD*|[Pp]d)                    REGION="foreign/PD" ;;
-      *FW*|[Ff]w)                    REGION="foreign/FW" ;;
+      "Finland")                  REGION="foreign/Finland" ;;
+      *SQ*|[Ss]q)                 REGION="foreign/SQ" ;;
+      *DA*|[Dd]a)                 REGION="foreign/DA" ;;
+      *PD*|[Pp]d)                 REGION="foreign/PD" ;;
+      *FW*|[Ff]w)                 REGION="foreign/FW" ;;
       *Asia*)                     REGION="foreign/Asia" ;;
       *PAL*)                      REGION="foreign/PAL" ;;
     esac
