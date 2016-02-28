@@ -31,7 +31,7 @@ function script_help () {
   echo " the 'good rom' cagegory -- Meaning it is from the US or World region, and is a standard"
   echo " release ROM (i.e. not Alpha/Beta/Proto/Unl ect.)"
   echo " It will then attempt to generate a meaningfull path from that information and generate a 'mv'"
-  echo " command that can be used to file the ROM according to the information found in it's name"
+  echo " command that can be used to file the ROM according to the information found in its name"
   echo " With the '-r' flag, the script will instead attempt to move the ROM automatically, craeting"
   echo " any needed directory structure in the [TargetDirectoryPath] specified"
   exit
@@ -172,9 +172,9 @@ for field in $(echo "$NAME" | $awk -vRS=")" -vFS="(" '{print $2}'); do
     esac
   fi
 done
-# If we never found a valid region, default it to 'foreign/other'
+# If we never found a valid region, default it to 'roms'
 if [ "$REGION" == "" ]; then 
-    REGION="foreign/unknown"
+    REGION="roms"
     decho "Region not detected, set to $REGION"
 fi
 
@@ -215,5 +215,5 @@ if [ "$PATH" != "$PROPOSEDPATH" ]; then
       echo "Proposed Move: mv -n -v $PATH -> $PROPOSEDPATH"
   fi
 elif [ "$QUIET" == "false" ]; then
-    echo "Rom is already in it's ideal location: $PATH"
+    echo "Rom is already in its ideal location: $PATH"
 fi
