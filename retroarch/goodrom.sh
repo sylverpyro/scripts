@@ -1,4 +1,4 @@
-#!/bin/bash -
+#!/bin/bash
 #===============================================================================
 #
 #          FILE: new-goodrom.sh
@@ -31,7 +31,7 @@ function script_help () {
   echo " the 'good rom' cagegory -- Meaning it is from the US or World region, and is a standard"
   echo " release ROM (i.e. not Alpha/Beta/Proto/Unl ect.)"
   echo " It will then attempt to generate a meaningfull path from that information and generate a 'mv'"
-  echo " command that can be used to file the ROM according to the information found in it's name"
+  echo " command that can be used to file the ROM according to the information found in its name"
   echo " With the '-r' flag, the script will instead attempt to move the ROM automatically, craeting"
   echo " any needed directory structure in the [TargetDirectoryPath] specified"
   exit
@@ -75,7 +75,7 @@ awk=/usr/bin/awk
 
 # String of fields we don't want to see in our 'good roms' path
 #  These are usually non-official, hacked, unrelease, or alpha/beta/prototype roms
-FILTER_OUT="\[[at].*?\]\|\[[aptobuhf].*\]\|(.*Alt.*)\|(.*Rev.*)\|([Uu]nl)\|(.*[Aa]lpha.*)\|(.*[Bb]eta.*)\|(.*[Pp]roto.*)\|(.*[Dd]emo.*)\|(.*[Kk]iosk.*)\|(.*[Ss]ample.*)\|\[sample\]\|(.*[Pp]romo.*)\|(Rumble Version)\|(SDK Build)\|(Developer Cart)\|(.*[Ss]pecial [Ee]dition.*)\|(.*[Pp]irate.*)\|(.*MDMM.*)\|(.*ACD3.*)\|(.*MDSTEE.*)"
+FILTER_OUT="\[not .*\]\|\[saved game\]\|\[.*hack.*]\|\[m\]\|\[m .*\]\|\[manual\]\|\[m3\]\|\[cr.*\]\|\[[at].*?\]\|\[[aptobuhf].*\]\|(.*Alt.*)\|(.*Rev.*)\|([Uu]nl)\|(.*[Aa]lpha.*)\|(.*[Bb]eta.*)\|(.*[Pp]roto.*)\|(.*[Dd]emo.*)\|(.*[Kk]iosk.*)\|(.*[Ss]ample.*)\|\[sample\]\|(.*[Pp]romo.*)\|(Rumble Version)\|(SDK Build)\|(Developer Cart)\|(.*[Ss]pecial [Ee]dition.*)\|(.*[Pp]irate.*)\|(.*MDMM.*)\|(.*ACD3.*)\|(.*MDSTEE.*)"
 
 # String of BIOS type names that we want to pre-filter
 #  Spaces are important, as is case
@@ -85,6 +85,11 @@ decho "Got rom name: $1"
 # Find the full file system path to the ROM
 PATH=$(readlink -f "$1")
 decho "Path: '$PATH'"
+
+if [ ! `echo "$PATH" | $grep -c '/colissions/'` -eq 0 ]; then
+  test "$QUIET" == "false" && echo "Detected '$PATH' is in a 'colissions' path (part of the path contains that folder).  Skipping ROM"
+  exit
+fi
 
 # Extract just the name of the file from the full path
 FILE=$($basename "$PATH")
@@ -157,18 +162,19 @@ for field in $(echo "$NAME" | $awk -vRS=")" -vFS="(" '{print $2}'); do
       *SV*|[Ss]v|"El Salvador")      REGION="foreign/ElSalvador" ;;
       *SR*|[Ss]r|Suriname)           REGION="foreign/Suriname" ;;
       *DO*|[Dd]o|"Dominican Republic") REGION="foreign/Dominican Republic" ;;
-      *SQ*|[Ss]q)                    REGION="foreign/SQ" ;;
-      *DA*|[Dd]a)                    REGION="foreign/DA" ;;
-      *PD*|[Pp]d)                    REGION="foreign/PD" ;;
-      *FW*|[Ff]w)                    REGION="foreign/FW" ;;
+      "Finland")                  REGION="foreign/Finland" ;;
+      *SQ*|[Ss]q)                 REGION="foreign/SQ" ;;
+      *DA*|[Dd]a)                 REGION="foreign/DA" ;;
+      *PD*|[Pp]d)                 REGION="foreign/PD" ;;
+      *FW*|[Ff]w)                 REGION="foreign/FW" ;;
       *Asia*)                     REGION="foreign/Asia" ;;
       *PAL*)                      REGION="foreign/PAL" ;;
     esac
   fi
 done
-# If we never found a valid region, default it to 'foreign/other'
+# If we never found a valid region, default it to 'roms'
 if [ "$REGION" == "" ]; then 
-    REGION="foreign/unknown"
+    REGION="roms"
     decho "Region not detected, set to $REGION"
 fi
 
@@ -187,16 +193,27 @@ decho "Proposed Path: $PROPOSEDPATH"
 
 # Check that the proposed path isn't where the rom currently exists
 if [ "$PATH" != "$PROPOSEDPATH" ]; then
+  # Check if there is already a file at this location
+  # If there is, we need to collect it in a 'colissions' folder
+  #  and add a colision number indicator
+  colission_count=0
+  while [ -f "$PROPOSEDPATH" ]; do
+    #echo "$PROPOSEDPATH already exists"
+    #echo "colission: $PATH"
+    let 'colission_count+=1'
+    REGION="colissions"
+    PROPOSEDPATH="$TARGETDIR/$REGION/${FILE}.$colission_count"
+  done
   # Check if we are supposed to actually move the ROM
-    if [ "$RUN" == "true" ]; then
-    # If it needs to be moved, and we were asked to move it, then do so
-    #  But make sure to make the directory path first (as the region codes can be obscure)
-        if [ ! -d "${TARGETDIR}/${REGION}" ]; then /usr/bin/mkdir -p "${TARGETDIR}/${REGION}" || exit; fi;
-        /usr/bin/mv -n -v "$PATH" "$PROPOSEDPATH"
-    else
-    # If we aren't going to actually move it, just print out where we would have moved it if asked
-        echo "Proposed Move: mv -n -v $PATH -> $PROPOSEDPATH"
-    fi
+  if [ "$RUN" == "true" ]; then
+  # If it needs to be moved, and we were asked to move it, then do so
+  #  But make sure to make the directory path first (as the region codes can be obscure)
+      if [ ! -d "${TARGETDIR}/${REGION}" ]; then /usr/bin/mkdir -p "${TARGETDIR}/${REGION}" || exit; fi;
+      /usr/bin/mv -n -v "$PATH" "$PROPOSEDPATH"
+  else
+  # If we aren't going to actually move it, just print out where we would have moved it if asked
+      echo "Proposed Move: mv -n -v $PATH -> $PROPOSEDPATH"
+  fi
 elif [ "$QUIET" == "false" ]; then
-    echo "Rom is already in it's ideal location: $PATH"
+    echo "Rom is already in its ideal location: $PATH"
 fi
