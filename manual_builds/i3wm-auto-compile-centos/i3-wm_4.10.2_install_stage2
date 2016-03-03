@@ -207,6 +207,9 @@ make clean
 make 
 sudo make install
 
+# Link the X11 xkb modules into /usr/local/share so i3 can find them
+sudo ln -s /usr/share/X11 /usr/local/share/
+
 #cd "$source_code"
 #curl -GL -O http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.29.tar.gz
 #tar xvf wireless_tools.29.tar.gz
@@ -228,10 +231,9 @@ git checkout "$latestTag"
 make clean
 make
 sudo make install
-# Link the X11 xkb modules into /usr/local/share so i3 can find them
-sudo ln -s /usr/share/X11 /usr/local/share/
+
 #echo "exec i3" > ~/.xinitrc
 #echo "exec ssh-agent i3" > ~/.xinitrc
 
 echo "i3 window manager build complete"
-echo "Ensure that 'exec ssh-agent i3' is present in your ~/.xinitrc"
+echo "Ensure that 'exec i3' is present in your ~/.xinitrc"
