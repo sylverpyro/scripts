@@ -69,12 +69,12 @@ case $MODE in
         #update_keys
         echo "Running AUR update"
         update_aur 
-		if [ $? -eq 0 ]; then
-			echo "Detected upgrade ran successfully.  Cleaning up"
-			cleanup
-		else
-			echo "Detected upgrade encountered errors.  Skipping cleanup"
-		fi
+		#if [ $? -eq 0 ]; then
+		#	echo "Detected upgrade ran successfully.  Cleaning up"
+		#	cleanup
+		#else
+		#	echo "Detected upgrade encountered errors.  Skipping cleanup"
+		#fi
         ;;
 	cleanup) cleanup;;
     orphan-detect|orphan) orphan-detect;;

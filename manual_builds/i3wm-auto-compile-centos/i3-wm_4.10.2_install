@@ -1,0 +1,40 @@
+#!/bin/bash
+set -e ## Exit immediately on errors instead of trying to continue on
+sudo yum -y update
+
+#Install for compiling and configuring needs
+#sudo yum install -y nano bzip2 gcc git pkgconfig autoconf automake libtool gperf byacc libxslt bison flex
+#sudo yum install -y bzip2 gcc git pkgconfig autoconf automake libtool gperf byacc libxslt bison flex
+sudo yum groupinstall -y "Development Tools"
+
+#If in a VM you will need to install files for kernel dev to load Guest additions (VirtualBox)
+sudo yum install -y kernel-devel
+
+#Mount the guest additions CD and install
+#sudo mount /dev/sr0 /media
+#sudo /media/VBoxLinuxAdditions.run
+
+#Install for X window system reqs
+sudo yum groupinstall -y "X Window System"
+
+#Install needed and available development libraries
+sudo yum install -y libxcb-devel libXcursor-devel pango-devel pcre-devel \
+  perl-Data-Dumper perl-Pod-Parser startup-notification-devel \
+  xcb-util-keysyms-devel xcb-util-devel xcb-util-wm-devel yajl-devel \
+  check-devel gettext-devel xterm xorg-x11-xkb-extras \
+  xorg-x11-xkb-utils-devel libxkbfile-devel libev-devel \
+  pulseaudio-libs-devel alsa-lib-devel asciidoc gperf \
+  libnl3-devel libconfuse-devel cmake
+
+#Add the following lines to a new file at the below location
+#TARGET=/etc/profile.d/pclib.sh
+#TARGET=~/.bashrc
+#echo 'export XORG_CONFIG=/etc/X11/' | sudo tee -a "$TARGET"
+#echo 'export PKG_CONFIG_LIBDIR=/usr/local/lib/pkgconfig/:/usr/lib/pkgconfig/:/usr/lib64/pkgconfig/' | sudo tee -a "$TARGET"
+#echo 'export PKG_CONFIG_PATH=/usr/share/pkgconfig/:/usr/local/share/pkgconfig/' | sudo tee -a "$TARGET"
+#echo 'export ACLOCAL_PATH=/usr/local/share/aclocal/' | sudo tee -a "$TARGET"
+#echo 'export LD_LIBRARY_PATH=/usr/local/lib/' | sudo tee -a "$TARGET"
+
+#Restart the machine so kernel and env vars take place.
+#sudo reboot
+echo "You may have installed a new kernel, so you will want to check that and reboot if you did"

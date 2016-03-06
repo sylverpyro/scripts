@@ -1,0 +1,239 @@
+#! /bin/bash
+# If any command returns an error code -- bail immediately instead
+#  of trying to continue on
+set -e 
+
+# Where all of our source code needs to go
+source_code="$HOME/Source"
+
+# A bunch of environment variables we may want
+#. /etc/profile.d/pclib.sh
+
+# The LD linking flag we need available during the builds
+NEW_LDFLAGS="$LDFLAGS -lxcb"
+export LDFLAGS="$NEW_LDFLAGS"
+
+# Make the source code directory if it's missing
+test -d "$source_code" || mkdir "$source_code"
+cd "$source_code"
+
+# Xorg macros
+codedir="$source_code/macros"
+echo "Starting work on $codedir"
+cd "$source_code"
+if [ ! -d "$codedir" ]; then
+  git clone http://cgit.freedesktop.org/xorg/util/macros/
+fi
+cd "$codedir"
+git fetch --tags
+latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+git checkout "$latestTag"
+./autogen.sh
+make clean
+make 
+sudo make install
+
+#util-render
+codedir="$source_code/util-renderutil"
+echo "Starting work on $codedir"
+cd "$source_code"
+if [ ! -d "$codedir" ]; then
+  git clone http://cgit.freedesktop.org/xcb/util-renderutil/
+fi
+cd "$source_code/util-renderutil"
+git submodule update --init
+git fetch --tags
+latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+git checkout "$latestTag"
+# Work around a limitation in the CentOS6 autoreconf not passing ACLOCAL_PATH to aclocal
+cp "$ACLOCAL_PATH/xorg-macros.m4" ./m4/
+./autogen.sh
+make clean
+make 
+sudo make install
+
+#util-image
+codedir="$source_code/util-image"
+echo "Starting work on $codedir"
+cd "$source_code"
+if [ ! -d "$codedir" ]; then
+  git clone http://cgit.freedesktop.org/xcb/util-image/
+fi
+cd "$codedir"
+git submodule update --init
+git fetch --tags
+latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+git checkout "$latestTag"
+# Work around a limitation in the CentOS6 autoreconf not passing ACLOCAL_PATH to aclocal
+cp "$ACLOCAL_PATH/xorg-macros.m4" ./m4/
+./autogen.sh
+make clean
+make 
+sudo make install
+
+#util-cursor
+codedir="$source_code/util-cursor"
+echo "Starting work on $codedir"
+cd "$source_code"
+if [ ! -d "$codedir" ]; then
+  git clone http://cgit.freedesktop.org/xcb/util-cursor/
+fi
+cd "$codedir"
+git submodule update --init
+git fetch --tags
+latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+git checkout "$latestTag"
+# Work around a limitation in the CentOS6 autoreconf not passing ACLOCAL_PATH to aclocal
+cp "$ACLOCAL_PATH/xorg-macros.m4" ./m4/
+./autogen.sh
+make clean
+make 
+sudo make install
+
+#proto
+codedir="$source_code/proto"
+echo "Starting work on $codedir"
+cd "$source_code"
+if [ ! -d "$codedir" ]; then
+  git clone http://cgit.freedesktop.org/xcb/proto/
+fi
+cd "$codedir"
+git fetch --tags
+latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+git checkout "$latestTag"
+./autogen.sh
+make clean
+make 
+sudo make install
+
+#libxcb
+codedir="$source_code/libxcb"
+echo "Starting work on $codedir"
+cd "$source_code"
+if [ ! -d "$codedir" ]; then
+  git clone http://cgit.freedesktop.org/xcb/libxcb/
+fi
+cd "$codedir"
+git fetch --tags
+latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+git checkout "$latestTag"
+# Work around a limitation in the CentOS6 autoreconf not passing ACLOCAL_PATH to aclocal
+cp "$ACLOCAL_PATH/xorg-macros.m4" ./m4/
+./autogen.sh
+make clean
+make 
+sudo make install
+
+#xkbcommon
+codedir="$source_code/libxkbcommon/"
+echo "Starting work on $codedir"
+cd "$source_code"
+if [ ! -d "$codedir" ]; then
+  git clone https://github.com/xkbcommon/libxkbcommon.git
+fi
+cd "$codedir"
+git fetch --tags
+latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+git checkout "$latestTag"
+# Work around a limitation in the CentOS6 autoreconf not passing ACLOCAL_PATH to aclocal
+cp "$ACLOCAL_PATH/xorg-macros.m4" ./m4/
+./autogen.sh
+make clean
+make 
+sudo make install
+
+#confuse 
+codedir="$source_code/confuse"
+echo "Starting work on $codedir"
+cd "$source_code"
+if [ ! -d "$codedir" ]; then
+  git clone http://git.savannah.gnu.org/r/confuse.git
+fi
+cd "$codedir"
+git fetch --tags
+latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+git checkout "$latestTag"
+# Work around a limitation in the CentOS6 autoreconf not passing ACLOCAL_PATH to aclocal
+cp "$ACLOCAL_PATH/xorg-macros.m4" ./m4/
+./autogen.sh
+make clean
+make
+sudo make install
+
+# Cairo
+codedir="$source_code/cairo"
+echo "Starting work on $codedir"
+cd "$source_code"
+if [ ! -d "$codedir" ]; then
+  git clone git://anongit.freedesktop.org/cairo
+fi
+cd "$codedir"
+git fetch --tags
+latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+git checkout "$latestTag"
+./autogen.sh --prefix=/usr/local
+make clean
+make 
+sudo make install
+
+# YAJL
+codedir="$source_code/yajl"
+echo "Starting work on $codedir"
+cd "$source_code"
+if [ ! -d "$codedir" ]; then
+  git clone https://github.com/lloyd/yajl.git
+fi
+cd "$codedir"
+git fetch --tags
+latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+git checkout "$latestTag"
+./configure --prefix=/usr/local
+make clean
+make 
+sudo make install
+
+#i3
+codedir="$source_code/i3"
+echo "Starting work on $codedir"
+cd "$source_code"
+if [ ! -d "$codedir" ]; then
+  git clone https://github.com/i3/i3.git
+fi
+cd "$codedir"
+git fetch --tags
+latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+git checkout "$latestTag"
+make clean
+make 
+sudo make install
+
+# Link the X11 xkb modules into /usr/local/share so i3 can find them
+sudo ln -s /usr/share/X11 /usr/local/share/
+
+#cd "$source_code"
+#curl -GL -O http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.29.tar.gz
+#tar xvf wireless_tools.29.tar.gz
+#cd wireless_tools.29
+#make
+#sudo make install
+
+#i3status
+codedir="$source_code/i3status/"
+echo "Starting work on $codedir"
+cd "$source_code"
+if [ ! -d "$codedir" ]; then
+  git clone https://github.com/i3/i3status.git
+fi
+cd "$codedir"
+git fetch --tags
+latestTag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+git checkout "$latestTag"
+make clean
+make
+sudo make install
+
+#echo "exec i3" > ~/.xinitrc
+#echo "exec ssh-agent i3" > ~/.xinitrc
+
+echo "i3 window manager build complete"
+echo "Ensure that 'exec i3' is present in your ~/.xinitrc"
