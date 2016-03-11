@@ -79,7 +79,7 @@ FILTER_OUT="\[not .*\]\|\[saved game\]\|\[.*hack.*]\|\[m\]\|\[m .*\]\|\[manual\]
 
 # String of BIOS type names that we want to pre-filter
 #  Spaces are important, as is case
-BIOS=" bios \| scph \| SCPH \| SCPH-\| BIOS \| Bios\|\[BIOS\]"
+BIOS=" bios \| scph \| SCPH \| SCPH-\| BIOS \| Bios\|\[BIOS\]\|ps-\|psone-\|ps2-"
 
 decho "Got rom name: $1"
 # Find the full file system path to the ROM

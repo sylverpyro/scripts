@@ -46,6 +46,9 @@ elif [ "$1" == "-d" -o "$1" == "--deactivate" ]; then
   # Print the all-clear to remove the device
   echo "The $array should be safe to remove now"
 
-#elif [ "$1" == "-a" -o "$1" == "--activate" ]; then
-#  echo "Not implemented yet"
+elif [ "$1" == "-a" -o "$1" == "--activate" ]; then
+  echo "Not implemented yet"
+  echo "In the meantime, sudo eject /dev/sd[cd] will cause the disk to re-add instantly and get picked back up"
+else
+	echo "Usage: $0 [-a|--activate|-d|--deactivate]"
 fi

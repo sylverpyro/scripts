@@ -28,7 +28,7 @@ file="$(basename "$path")"
 name="${file%.*}"
 ext="${file##*.}"
 
-search_for="\.cso\|\.iso\|\.img\|\.bin\|\.mdf\|\.ecm\|\.nes"
+search_for="\.cso\|\.iso\|\.img\|\.bin\|\.mdf\|\.ecm\|\.nes\|\.nds\|\.nrg\|\.cdi\|\.dsk\|\.1a\|\.chf\|\.gbc\|\.gcm\|\.u26\|\.rom\|\.a78\|\.xex\|\.d64\|\.t64\|\.adf\|\.int\|\.pce\|\.gb\|\.smc\|\.gg\|\.sf7\|\.gen\|\.k7\|\.atr\|\.ssd\|\.do\|\.fmem1\|\.a52\|\.lnx\|\.st\|\.mtx\|\.sad\|\.app\|\.32x\|\.sms\|\.dim\|\.p\|\.tzx\|\.k7"
 
 count=""
 case "$ext" in
