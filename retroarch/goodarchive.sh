@@ -27,12 +27,14 @@ path="$(readlink -f "$1")"
 file="$(basename "$path")"
 name="${file%.*}"
 ext="${file##*.}"
+mime="$(file "$path" --mime-type -b)"
 
 search_for="\.cso\|\.iso\|\.img\|\.bin\|\.mdf\|\.ecm\|\.nes\|\.nds\|\.nrg\|\.cdi\|\.dsk\|\.1a\|\.chf\|\.gbc\|\.gcm\|\.u26\|\.rom\|\.a78\|\.xex\|\.d64\|\.t64\|\.adf\|\.int\|\.pce\|\.gb\|\.smc\|\.gg\|\.sf7\|\.gen\|\.k7\|\.atr\|\.ssd\|\.do\|\.fmem1\|\.a52\|\.lnx\|\.st\|\.mtx\|\.sad\|\.app\|\.32x\|\.sms\|\.dim\|\.p\|\.tzx\|\.k7"
 
 count=""
-case "$ext" in
-  'zip')
+case "$mime" in
+#  'zip')
+  'application/zip')
     count="$(unzip -l "$path" | awk '/---------  ---------- -----   ----/,/---------                     -------/' | grep -v ^- | grep -i -c "$search_for")"
     if [ "$count" -eq 0 ]; then
       echo "Bad : $path"
@@ -41,7 +43,8 @@ case "$ext" in
     fi
     vecho "`unzip -l "$path" | awk '/---------  ---------- -----   ----/,/---------                     -------/' | grep -v ^-`"
     ;;
-  '7z')
+#  '7z')
+  'application/x-7z-compressed')
     count="$(7z l "$path" | tail -n +18 | head -n -2 | grep -i -c "$search_for")"
     if [ "$count" -eq 0 ]; then 
       echo "Bad : $path"
@@ -50,7 +53,8 @@ case "$ext" in
     fi
     vecho "`7z l "$path" | tail -n +18 | head -n -2`"
     ;;
-  'rar')
+#  'rar')
+  'application/x-rar')
     count="$(unrar l "$path" | tail -n +9 | head -n -3 | grep -i -c "$search_for")"
     if [ "$count" -eq 0 ]; then
       echo "Bad : $path"
@@ -60,5 +64,5 @@ case "$ext" in
     vecho "`unrar l "$path" | tail -n +9 | head -n -3`"
     ;;
   *)
-    echo "Unknown extension for file: $1" ;;
+    echo "Unknown mimetype '$mime' for file: $1" ;;
 esac
